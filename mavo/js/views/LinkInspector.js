@@ -102,8 +102,6 @@ var LinkInspector = Backbone.View.extend({
         this.$el.html(_.template(this.errortemplate)());
     }
 
-
-
     // already intialized previously
     if (cell.prop("sublink-type")){
       var val = cell.prop("sublink-type").split("|");
@@ -120,7 +118,6 @@ var LinkInspector = Backbone.View.extend({
 
   },
 
- 
   //Whenever something is changed in the inspector, make the corresponding change to the link in the model.
   updateCell: function() {
     var link = this._cellView.model;

@@ -65,39 +65,40 @@ var ToolbarView = Backbone.View.extend({
   //EVENTS
   //------
   btnUndo : function(){
-	  this.parent.commandManager.undo();
+	  App.commandManager.undo();
   },
   btnRedo : function(){
-	  this.parent.commandManager.redo();
+	  App.commandManager.redo();
   },
   btnClearAll : function(){
-	this.parent.graph.clear();
+	App.graph.clear();
+	App.elementCounter = 0;
 	document.cookie='graph={}; expires=Thu, 18 Dec 2013 12:00:00 UTC;';
   },
   btnClearElabel : function(){
-	var elements = this.parent.graph.getElements();
+	var elements = App.graph.getElements();
 	for (var i = 0; i < elements.length; i++){
 		elements[i].removeAttr(".satvalue/d");
 		elements[i].attr(".constraints/lastval", "none");
 		elements[i].attr(".mavo/text", " ");
-		var cellView  = elements[i].findView(this.parent.paper);
-		this.parent.elementInspector.render(cellView);
-		this.parent.elementInspector.$('#init-sat-value').val("none");
-		this.parent.elementInspector.updateHTML(null);
+		var cellView  = elements[i].findView(App.paper);
+		App.elementInspector.render(cellView);
+		App.elementInspector.$('#init-sat-value').val("none");
+		App.elementInspector.updateHTML(null);
 	}
   },
   btnSave : function() {
 	var name = window.prompt("Please enter a name for your file. \nIt will be saved in your Downloads folder. \n.json will be added as the file extension.", "<file name>");
 	if (name){
 		var fileName = name + ".json";
-		download(fileName, JSON.stringify(this.parent.graph.toJSON()));
+		App.download(fileName, JSON.stringify(App.graph.toJSON()));
 	}
   },
   btnLoad : function(){
 	$('#loader').click();
 	var loader = document.getElementById("loader");
 	var reader = new FileReader();
-	var graph = this.parent.graph;
+	var graph = App.graph;
 	
 	loader.onchange = function(){
 		reader.readAsText(loader.files.item(0));
@@ -108,17 +109,17 @@ var ToolbarView = Backbone.View.extend({
 	}
   },  
   btnZoomIn : function() {
-	this.parent.paperScroller.zoom(0.2, { max: 3 });
+	  App.paperScroller.zoom(0.2, { max: 3 });
   },
   btnZoomOut : function() {
-	this.parent.paperScroller.zoom(-0.2, { min: 0.2 });
+	  App.paperScroller.zoom(-0.2, { min: 0.2 });
   },
   btnSVG : function() {
-	this.parent.paper.openAsSVG();
+	  App.paper.openAsSVG();
   },
   btnFntUp : function(){
 	var max_font = 20;
-	var elements = this.parent.graph.getElements();
+	var elements = App.graph.getElements();
 	for (var i = 0; i < elements.length; i++){
 		if (elements[i].attr(".name/font-size") < max_font){
 			elements[i].attr(".name/font-size", elements[i].attr(".name/font-size") + 1);
@@ -127,7 +128,7 @@ var ToolbarView = Backbone.View.extend({
   },
   btnFntDown : function(){
 	var min_font = 6;
-	var elements = this.parent.graph.getElements();
+	var elements = App.graph.getElements();
 	for (var i = 0; i < elements.length; i++){
 		if (elements[i].attr(".name/font-size") > min_font){
 			elements[i].attr(".name/font-size", elements[i].attr(".name/font-size") - 1);
@@ -135,7 +136,7 @@ var ToolbarView = Backbone.View.extend({
 	}
   },
   btnFnt : function(){
-	var elements = this.parent.graph.getElements();
+	var elements = App.graph.getElements();
 	for (var i = 0; i < elements.length; i++){
 		elements[i].attr(".name/font-size", 10);
 	}
@@ -147,10 +148,10 @@ var ToolbarView = Backbone.View.extend({
 	  window.open("legend.html", "Legend", "width=300, height=250");
   },
   btnAnalysis : function(){
-	  this.parent.changeView('analysis');
+	  App.changeView('analysis');
   },
   btnModel : function(){
-	  this.parent.changeView('model');
+	  App.changeView('model');
   }
 });
 

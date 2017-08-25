@@ -13,18 +13,17 @@ var AnalysisView = Backbone.View.extend({
 	      this.$el.html(_.template(this.template)());
 	  },
 	  btnAnalysis : function(){
-		  var iSModel = new iStarModel(this.graph);
+		  var iSModel = new iStarModel(App.graph);
 		  iSModel.setModel();
 		  
-		  var localhost = true;
-		  if(localhost){
+		  if(App.develop){
 			var myjson = JSON.stringify(iSModel.getModel(), null, 2);
 		  	var x = window.open();
 			x.document.open();
 			x.document.write('<html><body><pre>' + myjson + '</pre></body></html>');
 			x.document.close();
 		  }else{
-			  this.parent.backendComm(iSModel.getModel());			  
+			  App.backendComm(iSModel.getModel());			  
 		  }
 	  },	  
 	  clear: function(){
@@ -32,4 +31,3 @@ var AnalysisView = Backbone.View.extend({
 	  }
 });
 
-AnalysisView.parent;

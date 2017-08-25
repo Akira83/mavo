@@ -48,16 +48,6 @@
 
         <script src="./js/3rdParty/keyboard.js"></script>
 
-        <script src="./js/objects.js"></script>
-
-        <script src="./js/views/ToolbarView.js"></script>
-        <script src="./js/views/ElementInspector.js"></script>
-        <script src="./js/views/LinkInspector.js"></script>
-      	<script src="./js/views/AnalysisView.js"></script>
-        <script src="./js/views/joint.extensions.js"></script>
-        
-        <script src="./js/utils.js"></script>
-        <script src="./js/app.js"></script>
  
         <div class = "attribution">
             <img src=http://upload.wikimedia.org/wikipedia/en/0/04/Utoronto_coa.svg style="width:25%;height:25%;float:left">
@@ -75,9 +65,11 @@
         </div>
         
         <script>
+        	//Defining the namespace for the application
+        	var App = {};
+        	
 	        window.onload = function() {
-	        	var app = new App();
-	            app.init();
+	            App.init();
 	        }
 
             SVGElement.prototype.getTransformToElement = SVGElement.prototype.getTransformToElement || function(toElement) {
@@ -85,5 +77,18 @@
 	        };
         </script>
         
+	        <!-- VIEWS -->
+	        <script src="./js/views/ToolbarView.js"></script>
+	        <script src="./js/views/ElementInspector.js"></script>
+	        <script src="./js/views/LinkInspector.js"></script>
+	      	<script src="./js/views/AnalysisView.js"></script>
+	        <script src="./js/views/joint.extensions.js"></script>
+	
+			<!-- Models -->
+	        <script src="./js/objects.js"></script>
+	        
+	        <script src="./js/utils.js"></script>
+	        <script src="./js/App.js"></script>
+	        
     </body>
 </html>
