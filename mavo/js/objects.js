@@ -82,7 +82,7 @@ function iStarModel(graph){
 				/**
 				 * NODE ACTOR ID
 				 */
-				var actorid = '-';
+				var actorid = 'none';
 				if (this.graph.getElements()[i].get("parent")){
 					actorid = (this.graph.getCell(this.graph.getElements()[i].get("parent")).prop("elementid") || "-");
 				}
@@ -125,8 +125,8 @@ function iStarModel(graph){
 			  	//Getting intentional element name
 				var name = this.graph.getElements()[i].attr(".name/text").replace(/\n/g, " ");
 				
-				//TODO
-				var annotation = this.graph.getElements()[i].attr(".mavo/value");
+				//Getting mavo annotations
+				var annotation = this.graph.getElements()[i].attr(".mavo/text");
 								
 				var maxsize = (this.graph.getElements()[i].attr(".mavo/size") || "1");
 				

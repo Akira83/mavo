@@ -6,7 +6,7 @@ var ElementInspector = Backbone.View.extend({
 
   template: [
       '<label>Node name</label>',
-      '<textarea class="cell-attrs-text"></textarea>',
+      '<textarea id="elementName" class="cell-attrs-text"></textarea>',
       '<label>Initial Satisfaction Value</label>',
       '<select id="init-sat-value" class="dropdown-elem-inpec">',
         '<option value=none> None </option>',
@@ -18,7 +18,9 @@ var ElementInspector = Backbone.View.extend({
         '<option value=denied> Denied </option>',
 	  '</select>',
       '<br>',
-      '<label>MAVO Annotation</label>',
+      '<label>MAVO Annotations</label>',
+      '<textarea id="annotations" class="cell-attrs-text"></textarea>',
+      '<label>Add New Annotation</label>',
       '<select id="mavo-annotation" class="dropdown-elem-inpec">',
       	'<option value=none> None </option>',
   		'<option value=M> May (M) </option>',
@@ -34,12 +36,13 @@ var ElementInspector = Backbone.View.extend({
 	      '<option value=4> 4 </option>',
 	      '<option value=5> 5 </option>',
 	    '</select>',
-	  '</div>'
+	  '</div>',
+	  '<button id="btn-clean" class="analysis-btns inspector-btn sub-label green-btn">Clean Annotations</button>'
   ].join(''),
   
   actor_template: [
     '<label>Actor name</label>',
-    '<textarea class="cell-attrs-text" maxlength=100></textarea>',
+    '<textarea id="elementName" class="cell-attrs-text" maxlength=100></textarea>',
     '<label> Actor type </label>',
     '<select class="actor-type">',
       '<option value=A> Actor </option>',
@@ -49,9 +52,10 @@ var ElementInspector = Backbone.View.extend({
 	].join(''),	
 
   events: {
-    'keyup .cell-attrs-text': 'nameAction',
+    'keyup #elementName': 'nameAction',
     'change #init-sat-value':'updateHTML',
-    'change #mavo-annotation':'updateHTML',
+    'change #mavo-annotation':'addMavoAnnotation',
+    'click #btn-clean':'cleanAnnotations',
     'change #set-size':'updateHTML',
     'change .actor-type': 'updateHTML'
 
@@ -65,7 +69,7 @@ var ElementInspector = Backbone.View.extend({
     // Render actor template if actor or actor2
     if (cell instanceof joint.shapes.basic.Actor || cell instanceof joint.shapes.basic.Actor2){
       this.$el.html(_.template(this.actor_template)());
-      this.$('.cell-attrs-text').val(cell.attr(".name/text") || '');
+      this.$('#elementName').val(cell.attr(".name/text") || '');
       return
     }else{
       this.$el.html(_.template(this.template)());
@@ -76,27 +80,29 @@ var ElementInspector = Backbone.View.extend({
     }, this);
     
     // Load initial value
-    this.$('.cell-attrs-text').val(cell.attr(".name/text") || '');
+    this.$('#elementName').val(cell.attr(".name/text") || '');
     this.$('#init-sat-value').val(cell.attr(".satvalue/value") || 'none');
     if (!cell.attr(".satvalue/value")){
       cell.attr(".satvalue/value", 'none');
     }
     
-    this.$('#mavo-annotation').val(cell.attr(".mavo/value") || 'none');
-    if (!cell.attr(".mavo/value")){
-        cell.attr(".mavo/value", 'none');
-    }
-
+    //Load MAVO annotations view
+    this.$('#annotations').val(cell.attr(".mavo/text") || 'none');
+    this.$('#mavo-annotation').val('none');
+    
     if (!cell.attr(".mavo/size")){
         cell.attr(".mavo/size", '');
     }
    
-    if(cell.attr(".mavo/value") == "S"){
+    var mavoAnnotations = (cell.attr(".mavo/text") || "");
+    
+    if(mavoAnnotations.indexOf("S") !== -1){
     	this.$('#set-size').val(cell.attr(".mavo/size") || '3');
     	this.$('#set-max-size').show();
     }else{
  	   this.$('#set-max-size').hide();   
     }    
+    	
   },
   // update cell name
   nameAction: function(event){
@@ -107,13 +113,30 @@ var ElementInspector = Backbone.View.extend({
     }
 
     var cell = this._cellView.model;
-    var text = this.$('.cell-attrs-text').val()
+    var text = this.$('#elementName').val()
     // Do not allow special characters in names, replace them with spaces.
 
     text = text.replace(/[^\w\n]/g, ' ');
     cell.attr({ '.name': { text: text } });
   },
-
+  //Add mavo annotation to the cell
+  addMavoAnnotation: function(){
+    var cell = this._cellView.model;
+    //Verify if the cell already has any annotation
+    var mavoAnnotations = cell.attr(".mavo/text");
+    var newAnnotation = this.$('#mavo-annotation').val();
+    //If it is the same annotation dont create a new one, just create if it is a new annotation
+    if(mavoAnnotations.indexOf(newAnnotation) == -1){
+        cell.attr(".mavo/text", mavoAnnotations + " " + newAnnotation);    	
+    }
+    this.render(this._cellView);
+  },
+  //Clear all mavo annotations
+  cleanAnnotations: function(){
+	  var cell = this._cellView.model;
+      cell.attr(".mavo/text", "");    
+      this.render(this._cellView);
+  },
   // update satisfaction value and buttons selection based on function type selection
   updateHTML: function(event){
    var initValue = this.$('#init-sat-value').val();

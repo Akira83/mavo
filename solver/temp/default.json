@@ -1,0 +1,38 @@
+{
+  "action": "oneSolution",
+  "model": {
+    "actors": [
+      {
+        "id": "a000",
+        "name": "Actor_1",
+        "type": "A"
+      }
+    ],
+    "nodes": [
+      {
+        "id": "0000",
+        "actorId": "-",
+        "name": "Goal_0",
+        "type": "G",
+        "maxsize": "3",
+        "satValue": "none"
+      },
+      {
+        "id": "0001",
+        "actorId": "-",
+        "name": "Task_1",
+        "type": "T",
+        "maxsize": "1",
+        "satValue": "none"
+      }
+    ],
+    "links": [
+      {
+        "source": "0001",
+        "target": "0000",
+        "type": "AND",
+        "annotation": "none"
+      }
+    ]
+  }
+}
