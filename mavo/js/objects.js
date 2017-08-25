@@ -117,7 +117,7 @@ function iStarModel(graph){
 				/**
 				 * INITIAL VALUE
 				 */
-			  	var satValue = this.graph.getElements()[i].attr(".satvalue/value");
+			  	var satValue = App.satvalues[this.graph.getElements()[i].attr(".satvalue/value")];
 			  	
 			  	/**
 			  	 * NODE NAME

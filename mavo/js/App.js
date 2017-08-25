@@ -10,13 +10,13 @@ App.commandManager;
 App.selectionView;	
 
 App.satvalues = {
-		"satisfied": "2", 
-		"partiallysatisfied": "1", 
-		"partiallydenied": "-1", 
-		"denied": "-2", 
-		"unknown": "0", 
-		"conflict": "3",
-		"none": "4"
+		"satisfied": "1", 
+		"partiallysatisfied": "2", 
+		"unknown": "3", 
+		"conflict": "4",
+		"partiallydenied": "5", 
+		"denied": "6", 
+		"none": "7"
 			};
 
 App.loadModels = function(){

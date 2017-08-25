@@ -8,6 +8,19 @@ import ca.uoft.cs.util.ShellCommand;
 
 public class Z3Solver {
 
+	//Solver satisfaction values from frontend
+	/*
+	App.satvalues = {
+			"satisfied": "1", 
+			"partiallysatisfied": "2", 
+			"unknown": "3", 
+			"conflict": "4",
+			"partiallydenied": "5", 
+			"denied": "6", 
+			"none": "7"
+				};
+	*/
+	
 	private OutputModel outputModel;
 	
 	public void solveModel(InputFile inputModel) {
@@ -47,8 +60,13 @@ public class Z3Solver {
 				}
 			}
 			sb.append(SMT.constInt("n"+iStarNode.getId()));
+			
+			
+			if(!iStarNode.getSatValue().equals("none")) {
+				sb.append(SMT.assertion(SMT.equal("n"+iStarNode.getId(), iStarNode.getSatValue())));
+			}
+			
 		}
-		
 		
 		//Adding check-sat statement
 		sb.append(SMT.checkSat());

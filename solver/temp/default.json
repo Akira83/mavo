@@ -10,7 +10,7 @@
         "type": "G",
         "annotation": "",
         "maxsize": "1",
-        "satValue": "none"
+        "satValue": "5"
       }
     ],
     "links": []

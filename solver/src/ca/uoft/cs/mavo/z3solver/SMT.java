@@ -14,4 +14,20 @@ public class SMT {
 		return output;
 	}
 
+	public static String equal(String value1, String value2) {
+		String output = "(= "
+				+ value1
+				+ " "
+				+ value2
+				+ ")\n";
+		return output;
+	}
+
+	public static String assertion(String value) {
+		String output = "(assert \n"
+				+ value
+				+ ")\n";
+		return output;
+	}
+
 }
