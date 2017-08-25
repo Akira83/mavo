@@ -40,9 +40,18 @@ public class Z3Solver {
 	private void convertModel2SMT(InputFile inputModel, StringBuilder sb) {
 		//Creating nodes
 		for(IStarNode iStarNode : inputModel.getModel().getNodes()) {
-			sb.append(SMT.declIntConst("n"+iStarNode.getId()));
+			//If the node is annotated with 'S' create mode nodes of same type
+			if(iStarNode.getAnnotation().contains("S")) {
+				for(int i = 1; i <= Integer.parseInt(iStarNode.getMaxsize()); i++) {
+					sb.append(SMT.constInt("n"+i+iStarNode.getId()));		
+				}
+			}
+			sb.append(SMT.constInt("n"+iStarNode.getId()));
 		}
 		
+		
+		//Adding check-sat statement
+		sb.append(SMT.checkSat());
 	}
 
 	private OutputModel result2OutputModel(String analysisResult) {

@@ -126,7 +126,7 @@ function iStarModel(graph){
 				var name = this.graph.getElements()[i].attr(".name/text").replace(/\n/g, " ");
 				
 				//Getting mavo annotations
-				var annotation = this.graph.getElements()[i].attr(".mavo/text");
+				var annotation = (this.graph.getElements()[i].attr(".mavo/text")||"");
 								
 				var maxsize = (this.graph.getElements()[i].attr(".mavo/size") || "1");
 				

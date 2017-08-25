@@ -123,11 +123,15 @@ var ElementInspector = Backbone.View.extend({
   addMavoAnnotation: function(){
     var cell = this._cellView.model;
     //Verify if the cell already has any annotation
-    var mavoAnnotations = cell.attr(".mavo/text");
+    var mavoAnnotations = (cell.attr(".mavo/text")||"");
     var newAnnotation = this.$('#mavo-annotation').val();
     //If it is the same annotation dont create a new one, just create if it is a new annotation
     if(mavoAnnotations.indexOf(newAnnotation) == -1){
-        cell.attr(".mavo/text", mavoAnnotations + " " + newAnnotation);    	
+        cell.attr(".mavo/text", mavoAnnotations + " " + newAnnotation);
+        if(newAnnotation=="S"){
+            var max_size = this.$('#set-size').val();
+        	cell.attr(".mavo/size", max_size); 
+        }
     }
     this.render(this._cellView);
   },

@@ -5,6 +5,7 @@ public class IStarNode {
 	private String actorId;
 	private String name;
 	private String type;
+	private String annotation;
 	private String maxsize;
 	private String satValue;
 	
@@ -40,6 +41,14 @@ public class IStarNode {
 		this.type = type;
 	}
 	
+	public String getAnnotation() {
+		return annotation;
+	}
+
+	public void setAnnotation(String annotation) {
+		this.annotation = annotation;
+	}
+
 	public String getMaxsize() {
 		return maxsize;
 	}
