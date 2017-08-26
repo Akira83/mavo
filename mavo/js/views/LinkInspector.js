@@ -164,8 +164,18 @@ var LinkInspector = Backbone.View.extend({
       link.attr({
         '.connection': {stroke: '#000000', 'stroke-dasharray': '5 2'},
         '.marker-source': {'d': 'M 0 0'},
-        '.marker-target': {'d': 'M 0 0'}
+        '.marker-target': {'d': 'M 0 0'},
       });
+      link.label(0 ,{position: 0.5, attrs: {text: {text: 'qualification'}}});
+
+    }
+    else if (linktype == "Dependency"){
+	    link.attr({
+	      '.connection': {stroke: '#000000', 'stroke-dasharray': '5 2'},
+	      '.marker-source': {'d': 'M 0 0'},
+	      '.marker-target': {'d': 'M 0 0'},
+	    });
+	    link.label(0 ,{position: 0.5, attrs: {text: {text: 'D'}}});  	
     }
     else{
       link.attr({

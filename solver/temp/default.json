@@ -10,9 +10,25 @@
         "type": "G",
         "annotation": "",
         "maxsize": "1",
-        "satValue": "5"
+        "satValue": "7"
+      },
+      {
+        "id": "0001",
+        "actorId": "none",
+        "name": "Quality_1",
+        "type": "S",
+        "annotation": "",
+        "maxsize": "1",
+        "satValue": "7"
       }
     ],
-    "links": []
+    "links": [
+      {
+        "source": "0000",
+        "target": "0001",
+        "type": "HELPS",
+        "annotation": "none"
+      }
+    ]
   }
 }

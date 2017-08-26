@@ -1,5 +1,7 @@
 package ca.uoft.cs.mavo;
 
+import java.util.ArrayList;
+
 public class IStarNode {
 	private String id;
 	private String actorId;
@@ -63,5 +65,14 @@ public class IStarNode {
 
 	public void setSatValue(String satValue) {
 		this.satValue = satValue;
+	}
+
+	public static IStarNode getLink(String target, ArrayList<IStarNode> nodes) {
+		for(IStarNode node : nodes) {
+			if(node.getId().equals(target)) {
+				return node;
+			}
+		}
+		return null;
 	}
 }
