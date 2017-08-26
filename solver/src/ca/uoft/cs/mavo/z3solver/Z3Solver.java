@@ -43,9 +43,22 @@ public class Z3Solver {
 	private void convertModel2SMT(InputFile inputModel, StringBuilder sb) {
 		convertingNodes(inputModel, sb);
 		linkPropagation(inputModel, sb);
-		
 		//Adding check-sat statement
 		sb.append(SMT.checkSat());
+		//Print the values for each node
+		printValNodes(inputModel, sb);
+	}
+
+	private void printValNodes(InputFile inputModel, StringBuilder sb) {
+		sb.append(";Print values for each node\n");
+		for(IStarNode node : inputModel.getModel().getNodes()) {
+			sb.append(SMT.echo("n"+node.getId()));
+			sb.append("\n");
+			sb.append(SMT.eval("n"+node.getId()));
+			sb.append("\n");
+		}
+		
+		
 	}
 
 	private void linkPropagation(InputFile inputModel, StringBuilder sb) {

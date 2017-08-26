@@ -89,4 +89,14 @@ public class SMT {
 		return sb.toString();
 	}
 
+	public static String echo(String string) {
+		String output = "(echo \""+string+"\")";
+		return output;
+	}
+
+	public static String eval(String string) {
+		String output = "(eval "+string+")";
+		return output;
+	}
+
 }

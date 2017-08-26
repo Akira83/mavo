@@ -39,3 +39,8 @@
  (= n0001 4))
 )
 (check-sat)
+;Print values for each node
+(echo "n0000")
+(eval n0000)
+(echo "n0001")
+(eval n0001)
