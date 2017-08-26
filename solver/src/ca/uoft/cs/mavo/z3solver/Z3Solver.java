@@ -2,35 +2,64 @@ package ca.uoft.cs.mavo.z3solver;
 
 import java.util.ArrayList;
 
+import com.google.gson.Gson;
+
 import ca.uoft.cs.mavo.IStarLink;
 import ca.uoft.cs.mavo.IStarNode;
 import ca.uoft.cs.mavo.InputFile;
+import ca.uoft.cs.mavo.NodeOutput;
 import ca.uoft.cs.mavo.OutputModel;
 import ca.uoft.cs.util.FileUtils;
 import ca.uoft.cs.util.ShellCommand;
 
 public class Z3Solver {
-	
-	private OutputModel outputModel;
-	
+		
 	public void solveModel(InputFile inputModel) {
 		//Create SMT file
 		String smtFilePath = "temp/model.smt2";
+		String analysisPath = "temp/output.json";
 		StringBuilder sb = new StringBuilder();
-
+		OutputModel outputModel = new OutputModel();
+		
 		convertModel2SMT(inputModel, sb);
 		
 		if(inputModel.getAction().equals("oneSolution")) {
 		
 			FileUtils.createFile(sb.toString(), smtFilePath);
-			String analysisResult = executeSMT2File(smtFilePath);
-			this.outputModel = result2OutputModel(analysisResult);
-
-		}else if(inputModel.getAction().equals("allSolutions")) {
+			String[] analysisResult = executeSMT2File(smtFilePath).split("\n");
+			if(analysisResult[0].equals("sat")) {
+				result2OutputModel(analysisResult, outputModel);
+			}else {
+				outputModel.setIsSat("UNSAT");
+			}
 			
+		}else if(inputModel.getAction().equals("allSolutions")) {
+			//TODO #7
 		}
 		
+		convertAnalysis2JSON(outputModel, analysisPath);
 		
+	}
+
+	private void convertAnalysis2JSON(OutputModel outputModel, String analysisPath) {
+		Gson gson = new Gson();
+		FileUtils.createFile(gson.toJson(outputModel), analysisPath);
+
+	}
+
+	private void result2OutputModel(String[] analysisResult, OutputModel outputModel) {
+		for(int i = 1; i < analysisResult.length; i++) {
+			if(!analysisResult[i].contains("sat")) {
+				if(analysisResult[i].contains("n")) {
+					NodeOutput node = new NodeOutput();
+					String nodeId = analysisResult[i].replace("\"", "");
+					nodeId = nodeId.replace("n","");
+					node.setNodeId(nodeId);
+					node.addSatValue(analysisResult[++i]);
+					outputModel.getNodesList().add(node);
+				}
+			}
+		}
 	}
 
 	/**
@@ -293,11 +322,6 @@ public class Z3Solver {
 		}
 	}
 
-	private OutputModel result2OutputModel(String analysisResult) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 	private String executeSMT2File(String smtFilePath) {
 		String z3Path = "z3";
 		String options = " -smt2 ";
@@ -307,13 +331,6 @@ public class Z3Solver {
 		
 		return output;
 		
-	}
-
-	public OutputModel getAnalysis() {
-		if(outputModel!=null) {
-			return outputModel;
-		}
-		return new OutputModel("noSolution");
 	}
 
 }

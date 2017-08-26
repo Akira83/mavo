@@ -3,10 +3,8 @@ package ca.uoft.cs.mavo;
 import java.io.FileReader;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
 import ca.uoft.cs.mavo.z3solver.Z3Solver;
-import ca.uoft.cs.util.FileUtils;
 
 /**
  * SolveModelTest 
@@ -29,7 +27,6 @@ public class SolveModel {
 		//This is the default filePath to be executed if no file is pass through parameters
 		String filePath = "temp/"; 			
 		String inputFile = "default.json";
-		String outputFile = "output.json";
 				
 		try {
 			//creating the backend model to be analysed
@@ -37,9 +34,7 @@ public class SolveModel {
 			
 			//Analyse the model
 			Z3Solver solver = new Z3Solver();
-			solver.solveModel(inputModel);
-			
-			createOutputFile(solver.getAnalysis(), filePath + outputFile);
+			solver.solveModel(inputModel);		
 	
 		} catch (Exception e) {
 			throw new RuntimeException(e.getMessage());
@@ -47,21 +42,9 @@ public class SolveModel {
 	}
 
 	/**
-	 * This method converts the Output object with the analyzed data into a json object file to be sent to frontend.
-	 * @param TroposCSPAlgorithm
-	 * The solver object that contains all necessary data.
-	 * @param filePath
-	 * Name of the file to be read by CGI to be sent to frontend
-	 */
-	private static void createOutputFile(OutputModel outputModel, String filePath) {
-		Gson gson = new GsonBuilder().setPrettyPrinting().create();		
-		FileUtils.createFile(gson.toJson(outputModel), filePath);
-	}
-
-	/**
 	 * This method converts the model file sent by the frontend into the ModelSpecPojo in order to be analysed
 	 * @param filePath
-	 * Path to the file with the frontend model
+	 * Path to the file with the frontend models
 	 * @return
 	 * ModelSpecPojo backend model
 	 */
