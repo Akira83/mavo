@@ -234,7 +234,8 @@ App.loadModels = function(){
 }
 
 App.loadViews = function(){
-	App.toolbar = new ToolbarView();
+	//App.toolbar = new ToolbarView();
+	App.toolbar = new MainMenuView();
 	App.elementInspector = new ElementInspector();
 	App.linkInspector = new LinkInspector();
 	App.analysisView = new AnalysisView();
@@ -242,8 +243,7 @@ App.loadViews = function(){
 	
 	//Views
 	//Main menu toolbar
-	$('.toolbar').append(App.toolbar.el);
-	App.toolbar.render();
+	$('#toolbar').append(App.toolbar.el);
 
 	//Element pannel options (right-panel)
 	$('.inspector').append(App.elementInspector.el);
@@ -278,14 +278,16 @@ App.changeView = function(mode){
 	//Verifying which view has to be shown
 	if(mode == "model"){
 		$("#stencil").show();
-		$("#btn-analysis").show();
-		$("#btn-model").hide();
+		$("#btn_analysis").show();
+		$("#btn_model").hide();
+		$("#analysis").show();
 		this.analysisView.clear();
 		
 	}else if(mode == "analysis"){
 		$("#stencil").hide();
-		$("#btn-model").show();
-		$("#btn-analysis").hide();
+		$("#btn_model").show();
+		$("#btn_analysis").hide();
+		$("#analysis").hide();
 		App.elementInspector.clear();
 		App.linkInspector.clear();
 		App.analysisView.graph = App.graph;

@@ -11,26 +11,27 @@
         <link rel="stylesheet" type="text/css" href="./rappid/dist/joint.ui.selectionView.css" />
         <link rel="stylesheet" type="text/css" href="./rappid/dist/joint.ui.paperScroller.css" />
         <link rel="stylesheet" type="text/css" href="./rappid/dist/rappid.min.css" />
+        <link rel="stylesheet" type="text/css" href="./css/bootstrap.css" />
         <link rel="stylesheet" type="text/css" href="./css/style.css" />
 
     </head>
     <body>
-        <p id="name">Leaf 2.0 (MAVO)</p>
-        
-        <div class="toolbar">
+       
+        <div id="toolbar">
         </div>
         
         <div id="stencil" class="left-panel"><label>Stencil</label></div>
 
         <div id="paper">
         </div>
+        
         <div class="inspector">
             <div id="layout"></div>
         </div>
+        
         <div id='analysis'>
         </div>
         
-
         <script src="./rappid/lib/jquery/jquery.min.js"></script>
         <script src="./rappid/lib/lodash/lodash.min.js"></script>
         <script src="./rappid/lib/backbone/backbone-min.js"></script>
@@ -47,23 +48,9 @@
         <script src="./rappid/dist/joint.shapes.devs.js"></script>
 
         <script src="./js/3rdParty/keyboard.js"></script>
+        <script src="./js/3rdParty/proper.min.js"></script>
+        <script src="./js/3rdParty/bootstrap.min.js"></script>
 
- 
-        <div class = "attribution">
-            <img src=http://upload.wikimedia.org/wikipedia/en/0/04/Utoronto_coa.svg style="width:25%;height:25%;float:left">
-            <br>
-            Copyright 2015-2017.<br>University of Toronto<br>
-            Department of Computer Science. <br>
-            All rights reserved.<br>
-            <br>
-            Powered by: <br>
-            <br>
-            <img src="./jointjs.png" style="width:25%;height:25%;float:left">
-            Copyright 2014-2017.<br>client IO. All rights reserved.<br>
-    		JointJS: an HTML 5 diagramming component.<br>
-    		<a href=http://jointjs.com target="_blank">http://jointjs.com</a>
-        </div>
-        
         <script>
         	//Defining the namespace for the application
         	var App = {};
@@ -79,6 +66,7 @@
         
 	        <!-- VIEWS -->
 	        <script src="./js/views/ToolbarView.js"></script>
+	        <script src="./js/views/MainMenuView.js"></script>
 	        <script src="./js/views/ElementInspector.js"></script>
 	        <script src="./js/views/LinkInspector.js"></script>
 	      	<script src="./js/views/AnalysisView.js"></script>
