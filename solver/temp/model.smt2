@@ -12,31 +12,22 @@
 (<= n0001 6)
  (>= n0001 1))
 )
-;Link propagation 
+(declare-const n0002 Int)
 (assert 
-	(or 
-(or 
-(and 
-(= n0000 1)
- (= n0001 2))
-(and 
-(= n0000 2)
- (= n0001 2))
-(and 
-(= n0000 5)
- (= n0001 5))
-(and 
-(= n0000 6)
- (= n0001 5))
-(and 
-(= n0000 3)
- (= n0001 3))
-(and 
-(= n0000 4)
- (= n0001 4))
+	(= n0002 1))
+;Adding node value range
+(assert 
+	(and 
+(<= n0002 6)
+ (>= n0002 1))
 )
-
- (= n0001 4))
+(assert 
+	(and 
+(>= n0000 n0001)(>= n0000 n0002))
+)
+(assert 
+	(and 
+(>= n0000 n0002)(>= n0000 n0001))
 )
 (check-sat)
 ;Print values for each node
@@ -44,3 +35,5 @@
 (eval n0000)
 (echo "n0001")
 (eval n0001)
+(echo "n0002")
+(eval n0002)

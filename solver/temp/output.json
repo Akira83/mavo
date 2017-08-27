@@ -1,1 +1,22 @@
-{"nodesList":[{"nodeId":"0000","satValues":["3"]},{"nodeId":"0001","satValues":["3"]}]}
+{
+  "nodesList": [
+    {
+      "nodeId": "0000",
+      "satValues": [
+        "1"
+      ]
+    },
+    {
+      "nodeId": "0001",
+      "satValues": [
+        "1"
+      ]
+    },
+    {
+      "nodeId": "0002",
+      "satValues": [
+        "1"
+      ]
+    }
+  ]
+}

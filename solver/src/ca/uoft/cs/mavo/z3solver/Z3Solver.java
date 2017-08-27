@@ -3,6 +3,7 @@ package ca.uoft.cs.mavo.z3solver;
 import java.util.ArrayList;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import ca.uoft.cs.mavo.IStarLink;
 import ca.uoft.cs.mavo.IStarNode;
@@ -42,7 +43,8 @@ public class Z3Solver {
 	}
 
 	private void convertAnalysis2JSON(OutputModel outputModel, String analysisPath) {
-		Gson gson = new Gson();
+		Gson gson = new GsonBuilder().setPrettyPrinting().create();
+
 		FileUtils.createFile(gson.toJson(outputModel), analysisPath);
 
 	}
