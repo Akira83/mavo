@@ -14,19 +14,23 @@ import ca.uoft.cs.mavo.z3solver.Z3Solver;
  *
  */
 public class SolveModel {
-
+	
+	public static boolean DEVELOP = true;
+	
 	/**
 	 * This method is responsible to execute all steps to generate the analysis file.
 	 * @param args
 	 * As parameters it receives the name of the file to be created.
-	 * Note: create a parameter to decide if it will execute a new analysis or use an existent one.
-	 * 		Alicia->Marcel: What does this note mean?
 	 */
 	public static void main(String[] args) {
 
 		//This is the default filePath to be executed if no file is pass through parameters
-		//String filePath = "/u/marcel/public_html/mavo/cgi-bin/temp/"; 			
-		String filePath = "temp/"; 			
+		String filePath;
+		if(SolveModel.DEVELOP) {
+			filePath = "temp/"; 				
+		}else {
+			filePath = "/u/marcel/public_html/mavo/cgi-bin/temp/"; 						
+		}
 		String inputFile = "default.json";
 				
 		try {
