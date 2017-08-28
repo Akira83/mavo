@@ -27,6 +27,7 @@ var AnalysisView = Backbone.View.extend({
 			x.document.open();
 			x.document.write('<html><body><pre>' + myjson + '</pre></body></html>');
 			x.document.close();
+			App.backendComm(iSModel.getModel());			  
 		  }else{
 			  App.backendComm(iSModel.getModel());			  
 		  }

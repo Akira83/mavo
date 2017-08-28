@@ -31,7 +31,7 @@ public class Z3Solver {
 			if(analysisResult[0].equals("sat")) {
 				result2OutputModel(analysisResult, outputModel);
 			}else {
-				outputModel.setIsSat("UNSAT");
+				outputModel.setIsSat("unsat");
 			}
 			
 		}else if(inputModel.getAction().equals("allSolutions")) {
