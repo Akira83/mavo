@@ -6,7 +6,7 @@ cgitb.enable()
 
 def executeCGI():
 
-	processedFilePath = 'temp/output.out'
+	processedFilePath = 'temp/output.json'
 
 	with open(processedFilePath) as data:
 		result = data.readlines()

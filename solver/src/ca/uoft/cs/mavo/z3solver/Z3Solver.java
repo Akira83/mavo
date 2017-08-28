@@ -3,7 +3,6 @@ package ca.uoft.cs.mavo.z3solver;
 import java.util.ArrayList;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
 import ca.uoft.cs.mavo.IStarLink;
 import ca.uoft.cs.mavo.IStarNode;
@@ -43,10 +42,9 @@ public class Z3Solver {
 	}
 
 	private void convertAnalysis2JSON(OutputModel outputModel, String analysisPath) {
-		Gson gson = new GsonBuilder().setPrettyPrinting().create();
-
+		//Gson gson = new GsonBuilder().setPrettyPrinting().create();
+		Gson gson = new Gson();
 		FileUtils.createFile(gson.toJson(outputModel), analysisPath);
-
 	}
 
 	private void result2OutputModel(String[] analysisResult, OutputModel outputModel) {
@@ -341,7 +339,8 @@ public class Z3Solver {
 	}
 
 	private String executeSMT2File(String smtFilePath) {
-		String z3Path = "z3";
+		//String z3Path = "z3";
+		String z3Path = "/u/marcel/z3-4.5.0-x64-ubuntu-14.04/bin/z3";
 		String options = " -smt2 ";
 		String command = z3Path + options + smtFilePath;
 		

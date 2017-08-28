@@ -29,7 +29,7 @@ var AnalysisView = Backbone.View.extend({
 			x.document.close();
 			App.backendComm(iSModel.getModel());			  
 		  }else{
-			  App.backendComm(iSModel.getModel());			  
+			  App.backendComm(myjson);			  
 		  }
 	  }, 
 	  allSolutions: function(){

@@ -15,28 +15,7 @@ App.download = function(filename, text) {
 App.backendComm = function(js_object){
 	
 	if(App.develop){
-		var analysisResult = {
-				  "nodesList": [
-					    {
-					      "nodeId": "0000",
-					      "satValues": [
-					        "1"
-					      ]
-					    },
-					    {
-					      "nodeId": "0001",
-					      "satValues": [
-					        "1"
-					      ]
-					    },
-					    {
-					      "nodeId": "0002",
-					      "satValues": [
-					        "1"
-					      ]
-					    }
-					  ]
-					};
+		var analysisResult = {};
 		App.loadAnalysis(analysisResult);
 
 	}else{
@@ -47,7 +26,7 @@ App.backendComm = function(js_object){
 			url: pathToCGI,
 			type: "post",
 			contentType: "json",
-			data:JSON.stringify(js_object),
+			data:JSON.stringify(js_object, null, 2),
 			success: function(response){
 				App.executeJava();
 			}
@@ -64,7 +43,7 @@ App.executeJava = function(){
 		url: pathToCGI,
 		type: "get",
 		success: function(response){
-			this.getFileResults();
+			App.getFileResults();
 		}
 	})
 	.fail(function(){
@@ -133,33 +112,6 @@ App.loadAnalysis = function(analysisResult){
 		}
 	}	
 }
-	
-
-////Update images for properties
-//// Navie: Changed satvalue from path to text
-//if (value == "satisfied"){
-//  // cell.attr({ '.satvalue': {'d': 'M 0 10 L 5 20 L 20 0 L 5 20 L 0 10', 'stroke': '#00FF00', 'stroke-width':4}});
-//  cell.attr(".satvalue/text", "(FS, T)");
-//}else if(value == "partiallysatisfied") {
-//  // cell.attr({ '.satvalue': {'d': 'M 0 8 L 5 18 L 20 0 L 5 18 L 0 8 M 17 30 L 17 15 C 17 15 30 17 18 23', 'stroke': '#00FF00', 'stroke-width':3, 'fill': 'transparent'}});
-//  cell.attr(".satvalue/text", "(PS, T)");
-//}else if (value == "denied"){
-//  // cell.attr({ '.satvalue': {'d': 'M 0 20 L 20 0 M 10 10 L 0 0 L 20 20', 'stroke': '#FF0000', 'stroke-width': 4}});
-//  cell.attr(".satvalue/text", "(T, FD)");
-//}else if (value == "partiallydenied") {
-//  // cell.attr({ '.satvalue': {'d': 'M 0 15 L 15 0 M 15 15 L 0 0 M 17 30 L 17 15 C 17 15 30 17 18 23', 'stroke': '#FF0000', 'stroke-width': 3, 'fill': 'transparent'}});
-//  cell.attr(".satvalue/text", "(T, PD)");
-//}else if (value == "unknown") {
-//  // cell.attr({ '.satvalue': {'d': 'M15.255,0c5.424,0,10.764,2.498,10.764,8.473c0,5.51-6.314,7.629-7.67,9.62c-1.018,1.481-0.678,3.562-3.475,3.562\
-//      // c-1.822,0-2.712-1.482-2.712-2.838c0-5.046,7.414-6.188,7.414-10.343c0-2.287-1.522-3.643-4.066-3.643\
-//      // c-5.424,0-3.306,5.592-7.414,5.592c-1.483,0-2.756-0.89-2.756-2.584C5.339,3.683,10.084,0,15.255,0z M15.044,24.406\
-//      // c1.904,0,3.475,1.566,3.475,3.476c0,1.91-1.568,3.476-3.475,3.476c-1.907,0-3.476-1.564-3.476-3.476\
-//      // C11.568,25.973,13.137,24.406,15.044,24.406z', 'stroke': '#222222', 'stroke-width': 1}});
-//      cell.attr(".satvalue/text", "?");
-//}else {
-//  cell.removeAttr(".satvalue/d");
-//}
-
 
 /**
  * PAPER ACTIONS
