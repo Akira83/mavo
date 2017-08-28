@@ -188,7 +188,7 @@ public class Z3Solver {
 						//Contribuition propagation
 							switch (sameTargetLink.getType()) {
 							case "MAKES":
-								contributionLinks.add(SMT.greatEqual("n"+sameTargetLink.getTarget(), "n"+sameTargetLink.getSource()));
+								contributionLinks.add(SMT.equal("n"+sameTargetLink.getTarget(), "n"+sameTargetLink.getSource()));
 								break;
 							case "HELPS":
 								ArrayList<String> terms = new ArrayList<>();
@@ -296,9 +296,6 @@ public class Z3Solver {
 								prop.add(SMT.equal("n"+sameTargetLink.getTarget(), "n"+sameTargetLink.getSource()));
 								break;
 							}
-							//The target node has to have the same value of one source node
-							sameValue.add(SMT.equal("n"+sameTargetLink.getTarget(), "n"+sameTargetLink.getSource()));
-
 						}
 						
 						String output = "";
