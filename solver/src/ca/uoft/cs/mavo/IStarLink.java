@@ -6,6 +6,7 @@ public class IStarLink {
 	private String target;
 	private String type;
 	private String annotation;
+	private Boolean added = false;
 	
 	public String getSource() {
 		return source;
@@ -37,6 +38,14 @@ public class IStarLink {
 	
 	public void setAnnotation(String annotation) {
 		this.annotation = annotation;
+	}
+
+	public Boolean getAdded() {
+		return added;
+	}
+
+	public void setAdded(Boolean added) {
+		this.added = added;
 	}
 	
 }
