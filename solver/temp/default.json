@@ -1,0 +1,49 @@
+{
+  "action": "oneSolution",
+  "model": {
+    "actors": [],
+    "nodes": [
+      {
+        "id": "0000",
+        "actorId": "none",
+        "name": "Goal_0",
+        "type": "G",
+        "annotation": "",
+        "maxsize": "1",
+        "satValue": "7"
+      },
+      {
+        "id": "0001",
+        "actorId": "none",
+        "name": "Goal_1",
+        "type": "G",
+        "annotation": "",
+        "maxsize": "1",
+        "satValue": "7"
+      },
+      {
+        "id": "0002",
+        "actorId": "none",
+        "name": "Goal_2",
+        "type": "G",
+        "annotation": "",
+        "maxsize": "1",
+        "satValue": "1"
+      }
+    ],
+    "links": [
+      {
+        "source": "0001",
+        "target": "0000",
+        "type": "AND",
+        "annotation": "none"
+      },
+      {
+        "source": "0002",
+        "target": "0000",
+        "type": "AND",
+        "annotation": "none"
+      }
+    ]
+  }
+}

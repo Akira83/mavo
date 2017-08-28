@@ -1,0 +1,82 @@
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf8"/>
+
+        <title>Modelling Tool Prototype</title>
+
+        <link rel="stylesheet" type="text/css" href="./rappid/dist/joint.ui.stencil.css" />
+        <link rel="stylesheet" type="text/css" href="./rappid/dist/joint.ui.halo.css" />
+        <link rel="stylesheet" type="text/css" href="./rappid/dist/joint.ui.selectionView.css" />
+        <link rel="stylesheet" type="text/css" href="./rappid/dist/joint.ui.paperScroller.css" />
+        <link rel="stylesheet" type="text/css" href="./rappid/dist/rappid.min.css" />
+        <link rel="stylesheet" type="text/css" href="./css/bootstrap.css" />
+        <link rel="stylesheet" type="text/css" href="./css/style.css" />
+
+    </head>
+    <body>
+       
+        <div id="toolbar">
+        </div>
+        
+        <div id="stencil" class="left-panel"><label>Stencil</label></div>
+
+        <div id="paper">
+        </div>
+        
+        <div class="inspector">
+            <div id="layout"></div>
+        </div>
+        
+        <div id='analysis'>
+        </div>
+        
+        <script src="./rappid/lib/jquery/jquery.min.js"></script>
+        <script src="./rappid/lib/lodash/lodash.min.js"></script>
+        <script src="./rappid/lib/backbone/backbone-min.js"></script>
+
+        <script src="./rappid/dist/rappid.min.js"></script>
+
+        <script src="./rappid/dist/joint.ui.halo.js"></script>
+        <script src="./rappid/dist/joint.ui.clipboard.js"></script>
+        <script src="./rappid/dist/joint.ui.stencil.js"></script>
+        <script src="./rappid/dist/joint.ui.paperScroller.js"></script>
+        <script src="./rappid/dist/joint.ui.selectionView.js"></script>
+        <script src="./rappid/dist/joint.format.svg.js"></script>
+        <script src="./rappid/dist/joint.dia.command.js"></script>
+        <script src="./rappid/dist/joint.shapes.devs.js"></script>
+
+        <script src="./js/3rdParty/keyboard.js"></script>
+        <script src="./js/3rdParty/proper.min.js"></script>
+        <script src="./js/3rdParty/bootstrap.min.js"></script>
+
+        <script>
+        	//Defining the namespace for the application
+        	var App = {};
+        	
+	        window.onload = function() {
+	            App.init();
+	        }
+
+            SVGElement.prototype.getTransformToElement = SVGElement.prototype.getTransformToElement || function(toElement) {
+	            return toElement.getScreenCTM().inverse().multiply(this.getScreenCTM());
+	        };
+        </script>
+        
+	        <!-- VIEWS -->
+	        <script src="./js/views/ToolbarView.js"></script>
+	        <script src="./js/views/MainMenuView.js"></script>
+	        <script src="./js/views/ElementInspector.js"></script>
+	        <script src="./js/views/LinkInspector.js"></script>
+	      	<script src="./js/views/AnalysisView.js"></script>
+	        <script src="./js/views/joint.extensions.js"></script>
+	
+			<!-- Models -->
+	        <script src="./js/objects.js"></script>
+	        
+	        <script src="./js/utils.js"></script>
+	        <script src="./js/App.js"></script>
+	        
+    </body>
+</html>
