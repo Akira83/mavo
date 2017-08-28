@@ -27,7 +27,7 @@ var ElementInspector = Backbone.View.extend({
   		'<option value=S> ABS (S) </option>',
   		'<option value=V> Variable (V) </option>',
 	  '</select>',
-	  '<div id="set-max-size" hidden>',
+	  '<div id="set-max-size">',
 	    '<label>Max Set</label>',
 	    '<select id="set-size" class="actor-type">',
 	      '<option value=1> 1 </option>',
@@ -44,7 +44,7 @@ var ElementInspector = Backbone.View.extend({
     '<label>Actor name</label>',
     '<textarea id="elementName" class="cell-attrs-text" maxlength=100></textarea>',
     '<label> Actor type </label>',
-    '<select class="actor-type">',
+    '<select id="actorType" class="actor-type">',
       '<option value=A> Actor </option>',
       '<option value=G> Agent </option>',
       '<option value=R> Role </option>',
@@ -52,12 +52,13 @@ var ElementInspector = Backbone.View.extend({
 	].join(''),	
 
   events: {
-    'keyup #elementName': 'nameAction',
-    'change #init-sat-value':'updateHTML',
+	'keyup #elementName': 'changeName',
+    'change #init-sat-value':'addInitialSatValue',	 
     'change #mavo-annotation':'addMavoAnnotation',
+    'change #set-size':'setAnnotationSize',
     'click #btn-clean':'cleanAnnotations',
-    'change #set-size':'updateHTML',
-    'change .actor-type': 'updateHTML'
+    //REFACTORING
+    'change #actorType': 'actorType'
 
   },
   
@@ -70,6 +71,7 @@ var ElementInspector = Backbone.View.extend({
     if (cell instanceof joint.shapes.basic.Actor || cell instanceof joint.shapes.basic.Actor2){
       this.$el.html(_.template(this.actor_template)());
       this.$('#elementName').val(cell.attr(".name/text") || '');
+      this.$('#actorType').val(cell.prop("actortype") || "A")
       return
     }else{
       this.$el.html(_.template(this.template)());
@@ -104,8 +106,7 @@ var ElementInspector = Backbone.View.extend({
     }    
     	
   },
-  // update cell name
-  nameAction: function(event){
+  changeName: function(event){
 	var ENTER_KEY = 13;
     //Prevent the ENTER key from being recorded when naming nodes.
 	if (event.which === ENTER_KEY){
@@ -115,11 +116,33 @@ var ElementInspector = Backbone.View.extend({
     var cell = this._cellView.model;
     var text = this.$('#elementName').val()
     // Do not allow special characters in names, replace them with spaces.
-
     text = text.replace(/[^\w\n]/g, ' ');
     cell.attr({ '.name': { text: text } });
   },
-  //Add mavo annotation to the cell
+  addInitialSatValue: function(){
+	  var cell = this._cellView.model;
+	  var value = this.$('#init-sat-value').val();
+	  cell.attr(".satvalue/value", this.$('#init-sat-value').val());
+	  if (value == "satisfied"){
+		  cell.attr({ '.satvalue': {'d': 'M 0 10 L 5 20 L 20 0 L 5 20 L 0 10', 'stroke': '#00FF00', 'stroke-width':4}});
+	  }else if(value == "partiallysatisfied") {
+		  cell.attr({ '.satvalue': {'d': 'M 0 8 L 5 18 L 20 0 L 5 18 L 0 8 M 17 30 L 17 15 C 17 15 30 17 18 23', 'stroke': '#00FF00', 'stroke-width':3, 'fill': 'transparent'}});
+	  }else if (value == "denied"){
+		  cell.attr({ '.satvalue': {'d': 'M 0 20 L 20 0 M 10 10 L 0 0 L 20 20', 'stroke': '#FF0000', 'stroke-width': 4}});
+	  }else if (value == "partiallydenied") {
+		  cell.attr({ '.satvalue': {'d': 'M 0 15 L 15 0 M 15 15 L 0 0 M 17 30 L 17 15 C 17 15 30 17 18 23', 'stroke': '#FF0000', 'stroke-width': 3, 'fill': 'transparent'}});
+	  }else if (value == "conflict") {
+		  cell.attr({ '.satvalue': {'d': 'M 0 0 L 20 8 M 20 7 L 5 15 M 5 14 L 25 23', 'stroke': '#222222', 'stroke-width': 4}});
+	  }else if (value == "unknown") {
+		  cell.attr({ '.satvalue': {'d': 'M15.255,0c5.424,0,10.764,2.498,10.764,8.473c0,5.51-6.314,7.629-7.67,9.62c-1.018,1.481-0.678,3.562-3.475,3.562\
+			    c-1.822,0-2.712-1.482-2.712-2.838c0-5.046,7.414-6.188,7.414-10.343c0-2.287-1.522-3.643-4.066-3.643\
+			    c-5.424,0-3.306,5.592-7.414,5.592c-1.483,0-2.756-0.89-2.756-2.584C5.339,3.683,10.084,0,15.255,0z M15.044,24.406\
+			    c1.904,0,3.475,1.566,3.475,3.476c0,1.91-1.568,3.476-3.475,3.476c-1.907,0-3.476-1.564-3.476-3.476\
+			  	C11.568,25.973,13.137,24.406,15.044,24.406z', 'stroke': '#222222', 'stroke-width': 1}});
+	  }else {
+	    cell.removeAttr(".satvalue/d");
+	  }
+  },
   addMavoAnnotation: function(){
     var cell = this._cellView.model;
     //Verify if the cell already has any annotation
@@ -135,124 +158,72 @@ var ElementInspector = Backbone.View.extend({
     }
     this.render(this._cellView);
   },
+  setAnnotationSize: function(){
+    var cell = this._cellView.model;
+	var max_size = this.$('#set-size').val();
+    var mavo = (cell.attr(".mavo/text")||"");
+	if(mavo.indexOf("S") !== -1){
+		cell.attr({'.mavo':{'text':'S', 'value':'S', 'size':max_size}}); 
+		this.$('#set-max-size').show();
+	}
+  },
   //Clear all mavo annotations
   cleanAnnotations: function(){
 	  var cell = this._cellView.model;
       cell.attr(".mavo/text", "");    
       this.render(this._cellView);
   },
-  // update satisfaction value and buttons selection based on function type selection
-  updateHTML: function(event){
-   var initValue = this.$('#init-sat-value').val();
-   
-   // display based on inital value
-    if((initValue == "none") || (initValue == "conflict")){
-      this.updateCell(null);
-      return
-    }else{
-    	this.updateCell();
-    }
+  actorType: function(){
+	  var cell = this._cellView.model;
+	    // Cease operation if selected is Actor
+	  	if (cell instanceof joint.shapes.basic.Actor){ 
+	    	cell.prop("actortype", this.$('#actorType').val());
+	    	if (cell.prop("actortype") == 'G'){
+	    		cell.attr({ '.line':
+	    					{'ref': '.label',
+	            			 'ref-x': 0,
+	            			 'ref-y': 0.08,
+	            			 'd': 'M 5 10 L 55 10',
+	            			 'stroke-width': 1,
+	            			 'stroke': 'black'}});
+	    	}else if (cell.prop("actortype") == 'R'){
+	    		cell.attr({ '.line':
+	    					{'ref': '.label',
+	            			 'ref-x': 0,
+	            			 'ref-y': 0.6,
+	            			 'd': 'M 5 10 Q 30 20 55 10 Q 30 20 5 10' ,
+	            			 'stroke-width': 1,
+	            			 'stroke': 'black'}});
+	    	}else {
+	    		cell.attr({'.line': {'stroke-width': 0}});
+	    	}
+	    	return;
+	  	}
+	    // Cease operation if selected is Actor2
+	    if (cell instanceof joint.shapes.basic.Actor2){ 
+	      cell.prop("actortype", this.$('#actorType').val());
+	      if (cell.prop("actortype") == 'G'){
+	        cell.attr({ '.line':
+	              {
+	                   'ref-x': 0,
+	                   'ref-y': 0.08,
+	                   'd': 'M 10 10 L 70 10',
+	                   'stroke-width': 1,
+	                   'stroke': 'black'}});
+	      }else if (cell.prop("actortype") == 'R'){
+	        cell.attr({ '.line':
+	              {
+	                   'ref-x': 0,
+	                   'ref-y': 0.6,
+	                   'd': 'M 5 10 Q 30 20 75 10 Q 30 20 5 10' ,
+	                   'stroke-width': 1,
+	                   'stroke': 'black'}});
+	      }else {
+	        cell.attr({'.line': {'stroke-width': 0}});
+	      }
+	      return;
+	    }
   },
-
-  //Make corresponding changes in the inspector to the actual element in the chart
-  updateCell: function(event) {
-		var cell = this._cellView.model;
-    // Cease operation if selected is Actor
-  	if (cell instanceof joint.shapes.basic.Actor){ 
-    	cell.prop("actortype", this.$('.actor-type').val());
-    	if (cell.prop("actortype") == 'G'){
-    		cell.attr({ '.line':
-    					{'ref': '.label',
-            			 'ref-x': 0,
-            			 'ref-y': 0.08,
-            			 'd': 'M 5 10 L 55 10',
-            			 'stroke-width': 1,
-            			 'stroke': 'black'}});
-    	}else if (cell.prop("actortype") == 'R'){
-    		cell.attr({ '.line':
-    					{'ref': '.label',
-            			 'ref-x': 0,
-            			 'ref-y': 0.6,
-            			 'd': 'M 5 10 Q 30 20 55 10 Q 30 20 5 10' ,
-            			 'stroke-width': 1,
-            			 'stroke': 'black'}});
-    	}else {
-    		cell.attr({'.line': {'stroke-width': 0}});
-    	}
-    	return;
-  	}
-    // Cease operation if selected is Actor2
-    if (cell instanceof joint.shapes.basic.Actor2){ 
-      cell.prop("actortype", this.$('.actor-type').val());
-      if (cell.prop("actortype") == 'G'){
-        cell.attr({ '.line':
-              {
-                   'ref-x': 0,
-                   'ref-y': 0.08,
-                   'd': 'M 10 10 L 70 10',
-                   'stroke-width': 1,
-                   'stroke': 'black'}});
-      }else if (cell.prop("actortype") == 'R'){
-        cell.attr({ '.line':
-              {
-                   'ref-x': 0,
-                   'ref-y': 0.6,
-                   'd': 'M 5 10 Q 30 20 75 10 Q 30 20 5 10' ,
-                   'stroke-width': 1,
-                   'stroke': 'black'}});
-      }else {
-        cell.attr({'.line': {'stroke-width': 0}});
-      }
-      return;
-    }
-
-    // save cell data
-    cell.attr(".satvalue/value", this.$('#init-sat-value').val());
-    cell.attr(".mavo/text", this.$('#mavo-annotation').val());
-    
-    //Update node display based on values
-    var value = this.$('#init-sat-value').val();
-
-    if (value == "satisfied"){
-      cell.attr({ '.satvalue': {'d': 'M 0 10 L 5 20 L 20 0 L 5 20 L 0 10', 'stroke': '#00FF00', 'stroke-width':4}});
-    }else if(value == "partiallysatisfied") {
-      cell.attr({ '.satvalue': {'d': 'M 0 8 L 5 18 L 20 0 L 5 18 L 0 8 M 17 30 L 17 15 C 17 15 30 17 18 23', 'stroke': '#00FF00', 'stroke-width':3, 'fill': 'transparent'}});
-    }else if (value == "denied"){
-      cell.attr({ '.satvalue': {'d': 'M 0 20 L 20 0 M 10 10 L 0 0 L 20 20', 'stroke': '#FF0000', 'stroke-width': 4}});
-    }else if (value == "partiallydenied") {
-      cell.attr({ '.satvalue': {'d': 'M 0 15 L 15 0 M 15 15 L 0 0 M 17 30 L 17 15 C 17 15 30 17 18 23', 'stroke': '#FF0000', 'stroke-width': 3, 'fill': 'transparent'}});
-    }else if (value == "conflict") {
-      cell.attr({ '.satvalue': {'d': 'M 0 0 L 20 8 M 20 7 L 5 15 M 5 14 L 25 23', 'stroke': '#222222', 'stroke-width': 4}});
-    }else if (value == "unknown") {
-      cell.attr({ '.satvalue': {'d': 'M15.255,0c5.424,0,10.764,2.498,10.764,8.473c0,5.51-6.314,7.629-7.67,9.62c-1.018,1.481-0.678,3.562-3.475,3.562\
-          c-1.822,0-2.712-1.482-2.712-2.838c0-5.046,7.414-6.188,7.414-10.343c0-2.287-1.522-3.643-4.066-3.643\
-          c-5.424,0-3.306,5.592-7.414,5.592c-1.483,0-2.756-0.89-2.756-2.584C5.339,3.683,10.084,0,15.255,0z M15.044,24.406\
-          c1.904,0,3.475,1.566,3.475,3.476c0,1.91-1.568,3.476-3.475,3.476c-1.907,0-3.476-1.564-3.476-3.476\
-          C11.568,25.973,13.137,24.406,15.044,24.406z', 'stroke': '#222222', 'stroke-width': 1}});
-    }else {
-      cell.removeAttr(".satvalue/d");
-    }
-    
-    //Update node display based on mavo
-    var mavo = this.$('#mavo-annotation').val();
-    var max_size = this.$('#set-size').val();
-    
-    if(mavo == "M"){
-    	cell.attr({'.mavo':{'text':'M', 'value':'M'}});
-    	this.$('#set-max-size').hide();
-    }else if(mavo == "S"){
-    	cell.attr({'.mavo':{'text':'S', 'value':'S', 'size':max_size}}); 
-    	this.$('#set-max-size').show();
-    }else if(mavo == "V"){
-    	cell.attr({'.mavo':{'text':'V', 'text':'V'}});
-    	this.$('#set-max-size').hide();
-    }else if(mavo == "none"){
-        cell.removeAttr(".mavo/text");
-        this.$('#set-max-size').hide();
-    }
-    	
-  },
-  
   clear: function(){
     this.$el.html('');
   }
