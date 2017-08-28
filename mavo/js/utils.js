@@ -301,7 +301,7 @@ switch(linktype){
 			'.marker-source': {'d': 'M 0 0'},
 			'.marker-target': {'d': 'M 100 0 C 85 -5, 85 20, 100 15 L 100 0 M -100 0' ,'fill': 'transparent'},
 		})
-		link.label(0 ,{position: 0.5, attrs: {text: {text: ""}}});
+		link.label(0 ,{position: 0.5, attrs: {text: {text: "Dependency"}}});
 		break;
 	case "Actor":
 		link.label(0 ,{position: 0.5, attrs: {text: {text: 'is-a'}}});

@@ -68,13 +68,6 @@ var LinkInspector = Backbone.View.extend({
   render: function(cellView, linktype) {
     this._cellView = cellView;
     var cell = this._cellView.model;
-    var type = cellView.model.attributes.labels[0].attrs.text.text
-
-    this.relationTextA = ["And-Decomposition", "Or-Decomposition (Means-end)", "Depends"];
-    this.relationTextB = ["Makes", "Breaks", "Helps", "Hurts"];
-    this.relationValA = ["and", "or", "depends"];
-    this.relationValB = ["makes", "breaks", "helps", "hurts"];
-
 
     // Choose template based on linktype: Contribution, refinement, error, neededby, qualification, actor or dependency
     console.log(linktype);
@@ -175,7 +168,7 @@ var LinkInspector = Backbone.View.extend({
 	      '.marker-source': {'d': 'M 0 0'},
 	      '.marker-target': {'d': 'M 0 0'},
 	    });
-	    link.label(0 ,{position: 0.5, attrs: {text: {text: 'D'}}});  	
+	    link.label(0 ,{position: 0.5, attrs: {text: {text: 'Dependecy'}}});  	
     }
     else{
       link.attr({

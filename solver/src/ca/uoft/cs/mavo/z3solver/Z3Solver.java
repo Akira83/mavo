@@ -127,7 +127,11 @@ public class Z3Solver {
 						case "QUALIFICATION":
 							prop.add(SMT.greatEqual("n"+sameTargetLink.getTarget(), "n"+sameTargetLink.getSource()));
 							break;
+						case "DEPENDENCY":
+							prop.add(SMT.equal("n"+sameTargetLink.getTarget(), "n"+sameTargetLink.getSource()));
+							break;
 						}
+						
 					}
 					targetProp = SMT.and(prop);
 					sb.append(SMT.assertion(targetProp));
@@ -149,6 +153,9 @@ public class Z3Solver {
 							break;
 						case "NEEDEDBY":
 							prop.add(SMT.greatEqual("n"+sameTargetLink.getTarget(), "n"+sameTargetLink.getSource()));
+							break;
+						case "DEPENDENCY":
+							prop.add(SMT.equal("n"+sameTargetLink.getTarget(), "n"+sameTargetLink.getSource()));
 							break;
 						}
 					}
@@ -266,6 +273,9 @@ public class Z3Solver {
 								));
 							contributionLinks.add(SMT.or(terms2));
 							break;
+						case "DEPENDENCY":
+							prop.add(SMT.equal("n"+sameTargetLink.getTarget(), "n"+sameTargetLink.getSource()));
+							break;
 						}
 					}
 					
@@ -286,8 +296,14 @@ public class Z3Solver {
 					prop.clear();
 					//Refinement, qualification, neededby propagation
 					for(IStarLink sameTargetLink: sameTargetLinks) {
-						if(sameTargetLink.getType().equals("QUALIFICATION"))
+						switch (sameTargetLink.getType()) {
+						case "QUALIFICATION":
 							prop.add(SMT.greatEqual("n"+sameTargetLink.getTarget(), "n"+sameTargetLink.getSource()));
+							break;
+						case "DEPENDENCY":
+							prop.add(SMT.equal("n"+sameTargetLink.getTarget(), "n"+sameTargetLink.getSource()));
+							break;
+						}
 					}
 					targetProp = SMT.and(prop);
 					sb.append(SMT.assertion(targetProp));
