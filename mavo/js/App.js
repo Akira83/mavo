@@ -8,6 +8,7 @@ App.paperScroller;
 App.selection; 
 App.commandManager;
 App.selectionView;	
+App.analysisResult = {};
 
 App.satvalues = {
 		"satisfied": "1", 

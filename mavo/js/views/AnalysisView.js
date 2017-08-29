@@ -41,10 +41,11 @@ var AnalysisView = Backbone.View.extend({
 		  
 		  if(App.develop){
 			myjson = JSON.stringify(myjson, null, 2);
-		  	var x = window.open();
-			x.document.open();
-			x.document.write('<html><body><pre>' + myjson + '</pre></body></html>');
-			x.document.close();
+			App.backendComm(iSModel.getModel());
+		  	//var x = window.open();
+			//x.document.open();
+			//x.document.write('<html><body><pre>' + myjson + '</pre></body></html>');
+			//x.document.close();
 		  }else{
 			  App.backendComm(iSModel.getModel());			  
 		  }

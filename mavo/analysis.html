@@ -1,0 +1,76 @@
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf8"/>
+
+        <title>Modelling Tool Prototype</title>
+
+        <link rel="stylesheet" type="text/css" href="./rappid/dist/joint.ui.stencil.css" />
+        <link rel="stylesheet" type="text/css" href="./rappid/dist/joint.ui.halo.css" />
+        <link rel="stylesheet" type="text/css" href="./rappid/dist/joint.ui.selectionView.css" />
+        <link rel="stylesheet" type="text/css" href="./rappid/dist/joint.ui.paperScroller.css" />
+
+        <link rel="stylesheet" type="text/css" href="./rappid/dist/rappid.min.css" />
+
+        <link rel="stylesheet" type="text/css" href="./css/analysis_html.css" />
+
+		<style>
+		.pagination a {
+		    color: white;
+		    float: left;
+		    padding: 8px 16px;
+		    text-decoration: none;
+		    transition: background-color .3s;
+		}
+		
+		.pagination a.active {
+		    background-color: #4CAF50;
+		    color: white;
+		}
+		
+		.pagination a:hover:not(.active) {background-color: #ddd;}
+		</style>
+
+    </head>
+    <body>
+        <p id="name">iStar 2.0 MAVO</p>
+        
+        <div id="navigation" class="left-panel" style="background-color: #333;">
+        <br>
+        <label>Number of Models</label>
+        <label id=num_states_lbl></label>
+        <label>Navigate</label>
+        	<input id="currentPage" type="hidden" value="">
+      		<div style="display: inline-block;">
+	      		<input id="requiredState" type="text" placeholder="Digit desired page" style="width: 180px; padding: 3px;"/>
+	      		<button onclick="Analysis.goToState()" style="float:right; padding: 2px;">Go</button>
+			</div>
+				
+	        <div id="pagination" class="pagination" style="display:inline-block;">
+				
+			</div>
+         </div>
+
+        <div id="paper">
+        </div>
+        
+        <script src="./rappid/lib/jquery/jquery.min.js"></script>
+        <script src="./rappid/lib/lodash/lodash.min.js"></script>
+        <script src="./rappid/lib/backbone/backbone-min.js"></script>
+
+        <script src="./rappid/dist/rappid.min.js"></script>
+
+        <script src="./rappid/dist/joint.ui.halo.js"></script>
+        <script src="./rappid/dist/joint.ui.clipboard.js"></script>
+        <script src="./rappid/dist/joint.ui.stencil.js"></script>
+        <script src="./rappid/dist/joint.ui.paperScroller.js"></script>
+        <script src="./rappid/dist/joint.ui.selectionView.js"></script>
+        <script src="./rappid/dist/joint.format.svg.js"></script>
+        <script src="./rappid/dist/joint.dia.command.js"></script>
+        <script src="./js/views/joint.extensions.js"></script>
+
+        <script src="./js/analysis.js"></script>
+			
+    </body>
+</html>
