@@ -17,7 +17,6 @@ App.backendComm = function(js_object){
 	if(App.develop){
 		var analysisResult = {};
 		App.loadAnalysis(analysisResult);
-
 	}else{
 		//backend script called
 		var pathToCGI = "./cgi-bin/backendCom.cgi";
@@ -66,7 +65,7 @@ App.getFileResults = function(){
 				alert("Ops! We couldn't read output.out file.")
 				return
 			}
-			console.log(JSON.stringify(response));
+			//console.log(JSON.stringify(response));
 			App.loadAnalysis(analysisResults);
 		}
 	})
@@ -116,8 +115,6 @@ App.loadAnalysis = function(analysisResult){
 /**
  * PAPER ACTIONS
  */
-
-
 //Identify link-type: Refinement, Contribution, Qualification or NeededBy
 //And store the linktype into the link
 function setLinkType(link){

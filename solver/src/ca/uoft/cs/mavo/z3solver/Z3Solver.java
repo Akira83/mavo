@@ -1,6 +1,10 @@
 package ca.uoft.cs.mavo.z3solver;
 
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.List;
 
 import com.google.gson.Gson;
 
@@ -35,7 +39,43 @@ public class Z3Solver {
 			}
 			
 		}else if(inputModel.getAction().equals("allSolutions")) {
-			//TODO #7
+			FileUtils.createFile(sb.toString(), smtFilePath);
+			String[] analysisResult = executeSMT2File(smtFilePath).split("\n");
+			if(analysisResult[0].equals("sat")) {
+				do {
+					//Add models to object to be sent to frontend
+					result2OutputModel(analysisResult, outputModel);
+					//Deny last values in the SMT2 file to be executed again
+					ArrayList<String> pastValues = new ArrayList<>();
+					
+					for(int i = 1; i < analysisResult.length; i++) {
+						if(!analysisResult[i].contains("sat")) {
+							if(analysisResult[i].contains("n")) {
+								String nodeId = analysisResult[i].replace("\"", "");
+								pastValues.add((SMT.equal(nodeId, analysisResult[++i])));
+							}
+						}
+					}
+					String notSolution = SMT.assertion(SMT.not(SMT.and(pastValues)));
+					
+					try {
+					List<String> newLines = new ArrayList<>();
+					for (String line : Files.readAllLines(Paths.get(smtFilePath), StandardCharsets.UTF_8)) {
+					    if (line.contains("(check-sat)")) {
+					       newLines.add(line.replace("(check-sat)", notSolution + "\n(check-sat)"));
+					    } else {
+					       newLines.add(line);
+					    }
+					}
+					Files.write(Paths.get(smtFilePath), newLines, StandardCharsets.UTF_8);
+					}catch (Exception e) {
+						throw new RuntimeException("Error in getting all sat values" + e);
+					}
+					analysisResult = executeSMT2File(smtFilePath).split("\n");
+				}while(analysisResult[0].equals("sat"));
+			}else {
+				outputModel.setIsSat("unsat");
+			}			
 		}
 		
 		convertAnalysis2JSON(outputModel, analysisPath);
@@ -49,17 +89,30 @@ public class Z3Solver {
 	}
 
 	private void result2OutputModel(String[] analysisResult, OutputModel outputModel) {
-		for(int i = 1; i < analysisResult.length; i++) {
-			if(!analysisResult[i].contains("sat")) {
-				if(analysisResult[i].contains("n")) {
-					NodeOutput node = new NodeOutput();
-					String nodeId = analysisResult[i].replace("\"", "");
-					nodeId = nodeId.replace("n","");
-					node.setNodeId(nodeId);
-					node.addSatValue(analysisResult[++i]);
-					outputModel.getNodesList().add(node);
+		if(outputModel.getNodesList().isEmpty()) {
+			//Executing for the first time
+			for(int i = 1; i < analysisResult.length; i++) {
+				if(!analysisResult[i].contains("sat")) {
+					if(analysisResult[i].contains("n")) {
+						NodeOutput node = new NodeOutput();
+						String nodeId = analysisResult[i].replace("\"", "");
+						nodeId = nodeId.replace("n","");
+						node.setNodeId(nodeId);
+						node.addSatValue(analysisResult[++i]);
+						outputModel.getNodesList().add(node);
+					}
 				}
 			}
+		}else {
+			//Adding new sat models
+			int nodeIndex = 0;
+			for(int i = 1; i < analysisResult.length; i++) {
+				if(!analysisResult[i].contains("sat")) {
+					if(!analysisResult[i].contains("n")) {
+						outputModel.getNodesList().get(nodeIndex++).addSatValue(analysisResult[i]);
+					}
+				}
+			}	
 		}
 	}
 
@@ -78,7 +131,7 @@ public class Z3Solver {
 		//Print the values for each node
 		printValNodes(inputModel, sb);
 	}
-
+	
 	private void printValNodes(InputFile inputModel, StringBuilder sb) {
 		sb.append(";Print values for each node\n");
 		for(IStarNode node : inputModel.getModel().getNodes()) {

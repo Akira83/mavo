@@ -99,4 +99,9 @@ public class SMT {
 		return output;
 	}
 
+	public static String not(String values) {
+		String output = "(not " + values + ")";
+		return output;
+	}
+
 }

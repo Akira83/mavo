@@ -33,7 +33,10 @@ function iStarModel(graph){
 				target = this.graph.getCell(current.get("target").id).prop("elementid");
 			
 			var annotation = "none";
-
+			if(current.attr(".mavo")){
+				annotation = current.attr(".mavo")[0];	
+			}
+			
 			var link = new Link(source, target, type, annotation);
 			
 			links.push(link);

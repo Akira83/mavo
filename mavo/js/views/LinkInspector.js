@@ -11,13 +11,15 @@ var LinkInspector = Backbone.View.extend({
       '<option value=and>And-Decomposition</option>',
       '<option value=or>Or-Decomposition (Means-end)</option>',
     '</select>',
-    '</div>',
+    '<label id="title">May Annotation</label>',
+    '<input id="mavo" type="checkbox" value="M">',
     '<br>'
   ].join(''),
   neededbytemplate: [
     '<label id="title">NeededBy Relationship</label>',
     '<br>',
-    '</div>',
+    '<label id="title">May Annotation</label>',
+    '<input id="mavo" type="checkbox" value="M">',
     '<br>'
   ].join(''),
   contributiontemplate: [
@@ -29,19 +31,21 @@ var LinkInspector = Backbone.View.extend({
       '<option value=helps>Helps</option>',
       '<option value=hurts>Hurts</option>',
     '</select>',
-    '</div>',
+    '<label id="title">May Annotation</label>',
+    '<input id="mavo" type="checkbox" value="M">', 
     '<br>'
   ].join(''),
   qualificationtemplate: [
     '<label id="title">Qualification Relationship</label>',
     '<br>',
-    '</div>',
-    '<br>'
+    '<label id="title">May Annotation</label>',
+    '<input id="mavo" type="checkbox" value="M">',
   ].join(''),
   dependencytemplate: [
     '<label id="title">Dependency</label>',
     '<br>',
-    '</div>',
+    '<label id="title">May Annotation</label>',
+    '<input id="mavo" type="checkbox" value="M">',
     '<br>'
   ].join(''),
   errortemplate: [
@@ -61,8 +65,8 @@ var LinkInspector = Backbone.View.extend({
 
   events: {
     'change .sublink-type': 'updateCell',
+    'change #mavo': 'addMavoAnnotation',
   },
-
 
   //Method to create the Link Inspector using the template.
   render: function(cellView, linktype) {
@@ -70,7 +74,6 @@ var LinkInspector = Backbone.View.extend({
     var cell = this._cellView.model;
 
     // Choose template based on linktype: Contribution, refinement, error, neededby, qualification, actor or dependency
-    console.log(linktype);
     switch(linktype){
       case 'Contribution':
         this.$el.html(_.template(this.contributiontemplate)());
@@ -90,7 +93,6 @@ var LinkInspector = Backbone.View.extend({
       case 'Dependency':
         this.$el.html(_.template(this.dependencytemplate)());
         break;
-
       default:
         this.$el.html(_.template(this.errortemplate)());
     }
@@ -103,6 +105,10 @@ var LinkInspector = Backbone.View.extend({
       if (val.length == 1){
         this.$('.sublink-type').val(val[0]);
       }
+    }
+    
+    if(cell.attr(".mavo")=="M"){
+    	this.$('#mavo').attr("checked",true);
     }
 
     cell.on('remove', function() {
@@ -180,17 +186,12 @@ var LinkInspector = Backbone.View.extend({
     }
     
   },
-
-  //Displays the additional options when delayed propagation is checked.
-  checkboxHandler: function(e){
-    if (e.currentTarget.checked){
-      document.getElementById("hidden").removeAttribute("style");
-    }
-    else{
-      document.getElementById("hidden").setAttribute("style", "display:none");
-    }
+  addMavoAnnotation : function(){
+	  var link = this._cellView.model;
+	  if(this.$('#mavo')[0].checked){		  
+		  link.attr(".mavo","M");
+	  }
   },
-
   clear: function(){
     this.$el.html('');
   }

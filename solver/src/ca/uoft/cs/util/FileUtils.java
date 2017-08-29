@@ -11,6 +11,9 @@ public class FileUtils {
 			file = new File(filePath);
 			if (!file.exists()) {
 				file.createNewFile();
+			}else {
+				file.delete();
+				file.createNewFile();
 			}
 			PrintWriter printFile = new PrintWriter(file);
 			printFile.printf(content);
