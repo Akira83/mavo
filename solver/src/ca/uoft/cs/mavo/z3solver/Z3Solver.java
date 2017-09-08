@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import ca.uoft.cs.mavo.IStarLink;
 import ca.uoft.cs.mavo.IStarNode;
@@ -39,10 +40,12 @@ public class Z3Solver {
 			}
 			
 		}else if(inputModel.getAction().equals("allSolutions")) {
+			int solutionNumber = 0;
 			FileUtils.createFile(sb.toString(), smtFilePath);
 			String[] analysisResult = executeSMT2File(smtFilePath).split("\n");
 			if(analysisResult[0].equals("sat")) {
 				do {
+					System.out.println("Finding solution... #" + solutionNumber++);
 					//Add models to object to be sent to frontend
 					result2OutputModel(analysisResult, outputModel);
 					//Deny last values in the SMT2 file to be executed again
@@ -83,8 +86,8 @@ public class Z3Solver {
 	}
 
 	private void convertAnalysis2JSON(OutputModel outputModel, String analysisPath) {
-		//Gson gson = new GsonBuilder().setPrettyPrinting().create();
-		Gson gson = new Gson();
+		Gson gson = new GsonBuilder().setPrettyPrinting().create();
+		//Gson gson = new Gson();
 		FileUtils.createFile(gson.toJson(outputModel), analysisPath);
 	}
 
@@ -174,22 +177,25 @@ public class Z3Solver {
 						prop.clear();
 						//Refinement and qualification propagation
 						for(IStarLink sameTargetLink: sameTargetLinks) {
-							switch (sameTargetLink.getType()) {
-							case "AND":
-								prop.add(SMT.greatEqual("n"+sameTargetLink.getTarget(), "n"+sameTargetLink.getSource()));
-								break;
-							case "OR":
-								prop.add(SMT.lessEqual("n"+sameTargetLink.getTarget(), "n"+sameTargetLink.getSource()));
-								break;
-							case "QUALIFICATION":
-								prop.add(SMT.greatEqual("n"+sameTargetLink.getTarget(), "n"+sameTargetLink.getSource()));
-								break;
-							case "DEPENDENCY":
-								prop.add(SMT.equal("n"+sameTargetLink.getTarget(), "n"+sameTargetLink.getSource()));
-								break;
-							}	
-							//The target node has to have the same value of one source node
-							sameValue.add(SMT.equal("n"+sameTargetLink.getTarget(), "n"+sameTargetLink.getSource()));
+							if(!sameTargetLink.getType().equals("QUALIFICATION")) {
+								switch (sameTargetLink.getType()) {
+								case "AND":
+									prop.add(SMT.greatEqual("n"+sameTargetLink.getTarget(), "n"+sameTargetLink.getSource()));
+									break;
+								case "OR":
+									prop.add(SMT.lessEqual("n"+sameTargetLink.getTarget(), "n"+sameTargetLink.getSource()));
+									break;
+								case "QUALIFICATION":
+									//IT WAS DECIDE THAT THIS LINK HAS NO PROPAGATION
+									//prop.add(SMT.greatEqual("n"+sameTargetLink.getTarget(), "n"+sameTargetLink.getSource()));
+									break;
+								case "DEPENDENCY":
+									prop.add(SMT.equal("n"+sameTargetLink.getTarget(), "n"+sameTargetLink.getSource()));
+									break;
+								}	
+								//The target node has to have the same value of one source node
+								sameValue.add(SMT.equal("n"+sameTargetLink.getTarget(), "n"+sameTargetLink.getSource()));	
+							}
 						}
 						targetProp = SMT.and(prop);
 						sb.append(";Link propagation\n");
@@ -204,28 +210,30 @@ public class Z3Solver {
 						prop.clear();
 						//Refinement, qualification, neededby propagation
 						for(IStarLink sameTargetLink: sameTargetLinks) {
-							switch (sameTargetLink.getType()) {
-							case "AND":
-								prop.add(SMT.greatEqual("n"+sameTargetLink.getTarget(), "n"+sameTargetLink.getSource()));
-								break;
-							case "OR":
-								prop.add(SMT.lessEqual("n"+sameTargetLink.getTarget(), "n"+sameTargetLink.getSource()));
-								break;
-							case "QUALIFICATION":
-								prop.add(SMT.greatEqual("n"+sameTargetLink.getTarget(), "n"+sameTargetLink.getSource()));
-								break;
-							case "NEEDEDBY":
-								prop.add(SMT.greatEqual("n"+sameTargetLink.getTarget(), "n"+sameTargetLink.getSource()));
-								break;
-							case "DEPENDENCY":
-								prop.add(SMT.equal("n"+sameTargetLink.getTarget(), "n"+sameTargetLink.getSource()));
-								break;
+							if(!sameTargetLink.getType().equals("QUALIFICATION")) {
+								switch (sameTargetLink.getType()) {
+								case "AND":
+									prop.add(SMT.greatEqual("n"+sameTargetLink.getTarget(), "n"+sameTargetLink.getSource()));
+									break;
+								case "OR":
+									prop.add(SMT.lessEqual("n"+sameTargetLink.getTarget(), "n"+sameTargetLink.getSource()));
+									break;
+								case "QUALIFICATION":
+									//IT WAS DECIDE THAT THIS LINK HAS NO PROPAGATION
+									//prop.add(SMT.greatEqual("n"+sameTargetLink.getTarget(), "n"+sameTargetLink.getSource()));
+									break;
+								case "NEEDEDBY":
+									prop.add(SMT.greatEqual("n"+sameTargetLink.getTarget(), "n"+sameTargetLink.getSource()));
+									break;
+								case "DEPENDENCY":
+									prop.add(SMT.equal("n"+sameTargetLink.getTarget(), "n"+sameTargetLink.getSource()));
+									break;
+								}
+	
+								//The target node has to have the same value of one source node
+								sameValue.add(SMT.equal("n"+sameTargetLink.getTarget(), "n"+sameTargetLink.getSource()));
 							}
-
-							//The target node has to have the same value of one source node
-							sameValue.add(SMT.equal("n"+sameTargetLink.getTarget(), "n"+sameTargetLink.getSource()));
 						}
-						
 						targetProp = SMT.and(prop);
 						sb.append(";Link propagation\n");
 						sb.append(SMT.assertion(targetProp));
@@ -352,16 +360,19 @@ public class Z3Solver {
 						}
 						
 						String output = "";
+						String assumeConflict = "";
 						if(contributionLinks.size() > 1) {
 							 output = output + SMT.and(contributionLinks);
+							//Assume that it can be conflict
+							assumeConflict = SMT.equal("n"+linkTarget, SatValues.CONF);
+
 						}else {
 							output = contributionLinks.get(0);
 						}
-						//Assume that it can be conflict
-						String assumeConflict = SMT.equal("n"+linkTarget, SatValues.CONF);
 						sb.append(";Link propagation \n");
 						sameValue.add(output);
-						sameValue.add(assumeConflict);
+						if(!assumeConflict.equals(""))
+							sameValue.add(assumeConflict);
 						sb.append(SMT.assertion(SMT.or(sameValue)));
 						break;
 					 
@@ -370,18 +381,20 @@ public class Z3Solver {
 						prop.clear();
 						//Refinement, qualification, neededby propagation
 						for(IStarLink sameTargetLink: sameTargetLinks) {
-							switch (sameTargetLink.getType()) {
-							case "QUALIFICATION":
-								prop.add(SMT.greatEqual("n"+sameTargetLink.getTarget(), "n"+sameTargetLink.getSource()));
-								break;
-							case "DEPENDENCY":
-								prop.add(SMT.equal("n"+sameTargetLink.getTarget(), "n"+sameTargetLink.getSource()));
-								break;
+							if(!sameTargetLink.getType().equals("QUALIFICATION")) {
+								switch (sameTargetLink.getType()) {
+								case "QUALIFICATION":
+									//IT WAS DECIDE THAT THIS LINK HAS NO PROPAGATION
+									//prop.add(SMT.greatEqual("n"+sameTargetLink.getTarget(), "n"+sameTargetLink.getSource()));
+									break;
+								case "DEPENDENCY":
+									prop.add(SMT.equal("n"+sameTargetLink.getTarget(), "n"+sameTargetLink.getSource()));
+									break;
+								}
+								//The target node has to have the same value of one source node
+								sameValue.add(SMT.equal("n"+sameTargetLink.getTarget(), "n"+sameTargetLink.getSource()));
 							}
-							//The target node has to have the same value of one source node
-							sameValue.add(SMT.equal("n"+sameTargetLink.getTarget(), "n"+sameTargetLink.getSource()));
 						}
-						
 						targetProp = SMT.and(prop);
 						sb.append(";Link propagation\n");
 						sb.append(SMT.assertion(targetProp));

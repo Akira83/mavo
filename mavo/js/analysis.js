@@ -1,60 +1,11 @@
 //Get necessary variables from the main page
 var Analysis = {}; 
 Analysis.document = jQuery.extend({}, window.opener.document);
-Analysis.graph = new joint.dia.Graph();
+Analysis.graph = window.opener.App.graph;
 console.log(JSON.stringify(window.opener.App.analysisResult));
-Analysis.paper;
-Analysis.paperScroller;
 Analysis.analysisResult = jQuery.extend({}, window.opener.App.analysisResult);
 Analysis.elements = [];
 
-Analysis.paper = new joint.dia.Paper({
-	    width: 1200,
-	    height: 600,
-	    gridSize: 10,
-	    perpendicularLinks: false,
-	    model: Analysis.graph,
-	    defaultLink: new joint.dia.Link({
-			'attrs': {
-				'.connection': {stroke: '#000000'},
-				'.marker-source': {'d': '0'},
-				'.marker-target': {stroke: '#000000', "d": 'M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5'}
-				},
-			'labels': [{position: 0.5, attrs: {text: {text: "and"}}}]
-		})
-	});
-
-Analysis.paperScroller = new joint.ui.PaperScroller({
-		autoResizePaper: true,
-		paper: Analysis.paper
-	});
-
-	$('#paper').append(Analysis.paperScroller.render().el);
-	Analysis.paperScroller.center();
-
-	//Load graph by the cookie
-	if (Analysis.document.cookie){
-		
-		var cookies = Analysis.document.cookie.split(";");
-		var prevgraph = "";
-		
-		for (var i = 0; i < cookies.length; i++){
-			if (cookies[i].indexOf("graph=") >= 0){
-				prevgraph = cookies[i].substr(6);
-			}
-		}
-
-		if (prevgraph != "" && prevgraph != "undefined"){
-			Analysis.graph.fromJSON(JSON.parse(prevgraph));
-		}	
-	}
-	
-	//Filter out Actors
-	for (var e = 0; e < Analysis.graph.getElements().length; e++){
-		if (!(Analysis.graph.getElements()[e] instanceof joint.shapes.basic.Actor))
-			Analysis.elements.push(Analysis.graph.getElements()[e]);
-	}
-	
 window.onload = function(){
 	Analysis.renderNavigationSidebar();	
 }

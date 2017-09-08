@@ -15,7 +15,7 @@ App.download = function(filename, text) {
 App.backendComm = function(js_object){
 	
 	if(App.develop){
-		var analysisResult = {"nodesList":[{"nodeId":"0000","satValues":["2","2","2"]},{"nodeId":"0001","satValues":["1","2","2"]},{"nodeId":"0002","satValues":["2","1","2"]}]};
+		var analysisResult = {};
 		App.loadAnalysis(analysisResult);
 	}else{
 		//backend script called
@@ -80,7 +80,7 @@ App.openAnalysisViewer = function(analysisResult){
 	var urlBase = document.URL.substring(0, document.URL.lastIndexOf('/')+1);
 	var url = urlBase+"analysis.html";
 
-	var w = window.open(url, "Analysis View", "status=0,title=0,height=600,width=1200,scrollbars=1");
+	var w = window.open(url, "Analysis View", "status=0,title=0,height=300,width=300,scrollbars=1");
 
 	if (!w) {
 	    alert('You must allow popups for this map to work.');
@@ -158,14 +158,12 @@ switch(true){
 	case ((targetCell == "basic.Actor") && (!sourceCellInActor)):
 		link.attr(".link-type", "Error");
 		break;
-
 	case ((sourceCell == "basic.Actor2") && (!targetCellInActor)):
 		link.attr(".link-type", "Dependency");
 		break;
 	case ((targetCell == "basic.Actor2") && (!sourceCellInActor)):
 		link.attr(".link-type", "Dependency");
 		break;
-
 	case ((!!sourceCellInActor) && (!targetCellInActor && (targetCell == "basic.Actor" || targetCell == "basic.Actor2"))):
 		link.attr(".link-type", "Error");
 		break;
@@ -178,7 +176,6 @@ switch(true){
 	case ((!!targetCellInActor) && (!sourceCellInActor)):
 		link.attr(".link-type", "Dependency");
 		break;
-
 	case ((sourceCell == "basic.Goal") && (targetCell == "basic.Goal")):
 		link.attr(".link-type", "Refinement");
 		break;
@@ -268,7 +265,8 @@ switch(linktype){
 	case "Dependency":
 		link.attr({
 			'.marker-source': {'d': 'M 0 0'},
-			'.marker-target': {'d': 'M 100 0 C 85 -5, 85 20, 100 15 L 100 0 M -100 0' ,'fill': 'transparent'},
+	        '.marker-target': {stroke: '#000000', "d": 'M 10 0 L 0 5 L 10 10 z'}
+//			'.marker-target': {'d': 'M 100 0 C 85 -5, 85 20, 100 15 L 100 0 M -100 0' ,'fill': 'transparent'},
 		})
 		link.label(0 ,{position: 0.5, attrs: {text: {text: "Dependency"}}});
 		break;
